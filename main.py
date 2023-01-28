@@ -43,16 +43,16 @@ unique_stations = unique_stations.query('geocoordX < 181 and geocoordY <= 181')
 unique_stations = unique_stations.drop_duplicates(subset=['stationnumber'])
 #list_of_unique_stations = df.stationnumber.unique()
 #unique_stations = pd.Series(list_of_unique_stations, name = "stationnumber")
-print(unique_stations.info())
+#print(unique_stations.info())
 #df_stations = unique_stations.join(df, how='left')
-print(len(unique_stations))
+#print(len(unique_stations))
 list_stationnumbers = unique_stations['stationnumber'].tolist()
 list_latitude = unique_stations['geocoordY'].tolist()
 list_longitude = unique_stations['geocoordX'].tolist()
 
-print(list_stationnumbers[549])
-print(list_latitude[549])
-print(list_longitude[549])
+#print(list_stationnumbers[549])
+#print(list_latitude[549])
+#print(list_longitude[549])
 
 conn2 = http.client.HTTPSConnection("api.open-meteo.com")
 
@@ -77,12 +77,12 @@ for i in range(len(list_stationnumbers)):
     meteo_df.loc[len(meteo_df.index)] = [list_stationnumbers[i], data2_dict['longitude'], data2_dict['latitude'],data2_dict['daily']['time'][4], data2_dict['daily']['temperature_2m_max'][4]]
     meteo_df.loc[len(meteo_df.index)] = [list_stationnumbers[i], data2_dict['longitude'], data2_dict['latitude'],data2_dict['daily']['time'][5], data2_dict['daily']['temperature_2m_max'][5]]
     meteo_df.loc[len(meteo_df.index)] = [list_stationnumbers[i], data2_dict['longitude'], data2_dict['latitude'],data2_dict['daily']['time'][6], data2_dict['daily']['temperature_2m_max'][6]]
-    print(i)
-    print(data2_dict)
+    #print(i)
+    #print(data2_dict)
 meteo_df['report_date'] = CURRENT_DATE
-with pd.option_context("display.max_rows", None, "display.max_columns", None):
+#with pd.option_context("display.max_rows", None, "display.max_columns", None):
 
-    print(meteo_df)
+    #print(meteo_df)
 
 
 # Credentials to database connection
@@ -97,5 +97,5 @@ engine = create_engine("mysql+pymysql://{user}:{pw}@{host}/{db}"
 
 # Convert dataframe to sql table
 #equipment.to_sql('equipment', engine, index=False, if_exists='append')#replace append
-#statuses.to_sql('statuses', engine, index=False, if_exists='append')
+statuses.to_sql('statuses', engine, index=False, if_exists='append')
 meteo_df.to_sql('forecast_temperature', engine, index=False, if_exists='append')
