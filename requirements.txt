@@ -1,2 +1,6 @@
 mysql-connector-python
 cryptography
+pandas
+requests
+pymysql
+sqlalchemy

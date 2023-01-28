@@ -4,11 +4,16 @@ import pandas as pd
 import requests
 import config
 import pymysql
+from datetime import datetime
 
 from sqlalchemy import create_engine
 
+
 API_KEY = config.api_key
 CLIENT_ID = config.client_id
+PWD = config.pwd
+
+CURRENT_DATE = datetime.now().date()
 
 response_list = []
 
@@ -25,9 +30,13 @@ res = conn.getresponse()
 data = json.loads(res.read().decode("utf-8"))
 
 df = pd.DataFrame.from_records(data)
-with pd.option_context("display.max_rows", None, "display.max_columns", None):
-    print((df['description'][2174]))
-equipment = df[["equipmentnumber", "geocoordX", "geocoordY", "description", "operatorname", "stationnumber", "type"]]#.head(2000)
+df['description'][2174] = 'Parkplatz 4'
+#with pd.option_context("display.max_rows", None, "display.max_columns", None):
+ #   print((df['description'][2174]))
+equipment = df[["equipmentnumber", "geocoordX", "geocoordY", "description", "operatorname", "stationnumber", "type"]]
+statuses = df[["equipmentnumber", "state"]]
+statuses['date'] = CURRENT_DATE
+
 unique_stations = df.drop_duplicates(subset=['stationnumber'])
 #list_of_unique_stations = df.stationnumber.unique()
 #unique_stations = pd.Series(list_of_unique_stations, name = "stationnumber")
@@ -42,20 +51,22 @@ conn2.request("GET", "/v1/forecast?latitude={}&longitude={}&daily=temperature_2m
 res2 = conn2.getresponse()
 data2 = res2.read()
 
-#with pd.option_context("display.max_rows", None, "display.max_columns", None):
+with pd.option_context("display.max_rows", None, "display.max_columns", None):
 
-    #print(df.columns)
-    #print(equipment.head())
+    print(statuses.head())
+
 
 # Credentials to database connection
 hostname="localhost:3306"
 dbname="mydb"
 uname="Lantana"
-pwd="db1234567!"
+pwd=PWD
 
 # Create SQLAlchemy engine to connect to MySQL Database
 engine = create_engine("mysql+pymysql://{user}:{pw}@{host}/{db}"
 				.format(host=hostname, db=dbname, user=uname, pw=pwd))
 
 # Convert dataframe to sql table
-equipment.to_sql('equipment', engine, index=False, if_exists='append')#replace append
+#equipment.to_sql('equipment', engine, index=False, if_exists='append')#replace append
+statuses.to_sql('statuses', engine, index=False, if_exists='append')
+
