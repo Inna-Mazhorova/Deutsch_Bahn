@@ -35,6 +35,7 @@ df['description'][2174] = 'Parkplatz 4'
 #with pd.option_context("display.max_rows", None, "display.max_columns", None):
  #   print((df['description'][2174]))
 equipment = df[["equipmentnumber", "geocoordX", "geocoordY", "description", "operatorname", "stationnumber", "type"]]
+
 statuses = df[["equipmentnumber", "state"]]
 statuses['date'] = CURRENT_DATE
 
